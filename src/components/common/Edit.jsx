@@ -19,6 +19,7 @@ const Edit = () => {
   let [students, setStudents] = useState([]);
 
   let [newBatch, setNewBatch] = useState('')
+
   const handleEdit = async ()=> {
     try {
       let data = {name, batch, email, students}
@@ -33,12 +34,13 @@ const Edit = () => {
 
   const getDetails = async ()=>{    
     let res = await axios.get(`${API_URL}/mentors/${params.id}`)
+    let res2 = await axios.get(`${API_URL}/mentors/students/${params.id}`)
     try {
       if(res.status === 200){
         setName(res.data.mentor.name)
         setBatch(res.data.mentor.batch)
         setEmail(res.data.mentor.email)
-        setStudents(res.data.mentor.students)
+        setStudents(res2.data.students)
       }
     } catch (error) {
       
@@ -46,19 +48,19 @@ const Edit = () => {
   }
 
 
-  const getStudetn = async () =>{
-      try {
-      students.map(async (e)=>{          
-          let res = await axios.get(`${API_URL}/student/${e}`)
-          if(res.status === 200){
-            return  res.data.student.name
-          }
-    })
+  // const getStudetn = async () =>{
+  //     try {
+  //     students.map(async (e)=>{          
+  //         let res = await axios.get(`${API_URL}/student/${e}`)
+  //         if(res.status === 200){
+  //           return  res.data.student.name
+  //         }
+  //   })
         
-    } catch (error) {
+  //   } catch (error) {
         
-    }
-  }
+  //   }
+  // }
 
   const handleAddBatch = ()=>{
       let newArray = [...batch]
@@ -85,7 +87,6 @@ const Edit = () => {
   return (
     <>
      <div className="edit-form">
-     <Button onClick={()=> getStudetn()} variant="warning">Hi </Button>
         <div className="Title">
             <h1 className='text-center'>Edit Mentor
                 <FaUserEdit style={{ paddingBottom: "5px" , fontSize: "60px" , filter: "drop-shadow(1px 1px 20px blue)"
@@ -108,35 +109,26 @@ const Edit = () => {
                     <Form.Control type="text" value={newBatch} onChange={(e)=>{setNewBatch(e.target.value)}} placeholder="Add New Batch" />
                     <Button onClick={()=> handleAddBatch()} variant="success">Add</Button>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="formGroupPassword">
+                {/* <Form.Group className="mb-3" controlId="formGroupPassword">
                     <Form.Label>Students :</Form.Label>
                     <Form.Control type="text" value={students} onChange={(e)=>{setStudents(e.target.value)}} placeholder="123-456-7890" />
-                </Form.Group>
+                </Form.Group> */}
 
             </div>
             <div className="formGroup">
-                <div className="batch">
+                <div className="batch m-2">
                     <h5 className='text-center text-light'>Batchs</h5>
                     {
                         batch.map((e, i)=> <div key={i} className='d-flex justify-content-around'><span>{e}</span><span  onClick={()=>handleBatchDelte(i)} className='trash_can'><FaTrashCan /></span></div>)
                     }                  
                         
                 </div>
-                <div className="student">
+                <div className="student m-2">
                     <h5 className='text-center text-light'>Students</h5>
-                    {
-                        // students.map((e, i)=> <div key={i} className='d-flex justify-content-around'><span>{e}</span><span className='trash_can'><FaTrashCan  /></span></div>)
-                        
-                       
-                            students.map((e, i)=>{          
-                                // let res = await axios.get(`${API_URL}/student/${e}`)
-                                // if(res.status === 200){
-                                //   return  res.data.student.name
-                                  return <div key={i} className='d-flex justify-content-around'><span>{e}</span><span className='trash_can'><FaTrashCan /></span></div>
-                                // }
-                          })
-                              
-                        
+                    {                       
+                            students.map((e, i)=>{                               
+                                  return <div key={i} className='d-flex justify-content-around'><span>{e.name}</span><span className='trash_can'><FaTrashCan /></span></div>                               
+                          })                            
                     }                  
                         
                 </div>
@@ -152,8 +144,7 @@ const Edit = () => {
             </div>
         </Form>
     </div>
-    </>
-   
+    </>   
   )
 }
 

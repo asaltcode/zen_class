@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import { API_URL } from "../../../App";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const StudentList = () => {
     let params = useParams()
@@ -13,36 +13,40 @@ const StudentList = () => {
   let navigate = useNavigate();
   let [student, setStudent] = useState([]);
 
-  const studentList = () =>{
-    let params = useParams()
-    let id = params.id
+  const findIndex = (array, id)=>{ // array index finder
+    for(let i = 0; i< array.length; i++){
+      if(array[i]._id === id){
+        return i
+      }
+    }
   }
-
   // All user datas geting
-  const getDetails = async () => {
+  const getDetails = async () => {    
     let res = await axios.get(`${API_URL}/mentors/students/${id}`);//api/mentors/students/:mentor_id
-    console.log(res.data.students);
     try {
       if (res.status === 200) {
         setStudent(res.data.students);
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Internal Server Error")
+    }
   };
 
   // handleDelete users
   const handleDelete = async (id, batch) => {
     if (confirm("Are you sure to delete the Student?")) {
       try {
-          let res = await axios.delete(`${API_URL}/student/${id}`); //api/student/:id
-          let res2 = await axios.post(`${API_URL}/assign/student/${batch}/mentor/${params.id}`); //api/assign/student/:batch/mentor/:mentor_id
-
-        console.log(id);
+      const index = findIndex(student, id)
+      let newArray = [...student]
+      newArray.splice(index, 1)
+      setStudent(newArray)
+      toast.success("Student Deleted Successfully!");
+         let res = await axios.delete(`${API_URL}/student/${id}`); //api/student/:id
         if (res.status === 200) {
-          //   toast.success("Blog Deleted Successfully!");
           getDetails();
         }
       } catch (error) {
-        // toast.error("Internal Server Error");
+        toast.error("Internal Server Error");
       }
     }
   };

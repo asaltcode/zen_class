@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-// import { API_URL } from "../App";
 import { API_URL } from "../../../App";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FaTrashCan } from "react-icons/fa6";
 import { LiaUserEditSolid } from "react-icons/lia";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const AllStudent = () => {
-    let params = useParams()
-    let id = params.id
+  
   let navigate = useNavigate();
   let [student, setStudent] = useState([]);
 
+  const findIndex = (array, id)=>{ // array index finder
+    for(let i = 0; i< array.length; i++){
+      if(array[i]._id === id){
+        return i
+      }
+    }
+  }
 
   // All user datas geting
   const getDetails = async () => {
@@ -26,22 +31,24 @@ const AllStudent = () => {
     } catch (error) {}
   };
 
-  // handleDelete users
-  const handleDelete = async (id, batch) => {
-    if (confirm("Are you sure to delete the Student?")) {
-      try {
+    // handleDelete users
+    const handleDelete = async (id, batch) => {
+      if (confirm("Are you sure to delete the Student?")) {
+        try {
+        const index = findIndex(student, id)
+        let newArray = [...student]
+        newArray.splice(index, 1)
+        setStudent(newArray)
+        toast.success("Student Deleted Successfully!");
           let res = await axios.delete(`${API_URL}/student/${id}`); //api/student/:id
-          let res2 = await axios.post(`${API_URL}/assign/student/${batch}/mentor/${params.id}`); //api/assign/student/:batch/mentor/:mentor_id
-
-        if (res.status === 200) {
-          //   toast.success("Blog Deleted Successfully!");
-          getDetails();
+          if (res.status === 200) {
+            getDetails();
+          }
+        } catch (error) {
+          toast.error("Internal Server Error");
         }
-      } catch (error) {
-        // toast.error("Internal Server Error");
       }
-    }
-  };
+    };
 
   useEffect(() => {
     getDetails();

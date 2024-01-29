@@ -23,7 +23,7 @@ let [previous_mentor, setPrevious_mentor] = useState([]);
   const handleAdd = async () => {
     try {
       let data = { name, batch, email, mentor, previous_mentor};
-      if(data.name === "" && data.batch === "" && data.email === "" && data.mentor === ""){
+      if(data.name === "" || data.batch === "" || data.email === "" || data.mentor === ""){
            alert("Some input is empty")
       }else{
                 let res = await axios.post(`${API_URL}/student`, data);
