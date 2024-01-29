@@ -7,6 +7,7 @@ import AllStudent from '../page/student/AllStudent'
 import StudentList from '../page/student/StudentList'
 import { Navigate } from 'react-router-dom'
 import Edit from '../common/Edit'
+import StudentEdit from '../page/student/StudentEdit'
 
 const AppRoutes = [
     {
@@ -38,6 +39,11 @@ const AppRoutes = [
         path: "/edit/:id",
         exact: true,
         element: <><Edit/></>
+    },
+    {
+        path: "/student-edit/:id",
+        exact: true,
+        element: <><StudentEdit/></>
     },
     {
         path: "/*",

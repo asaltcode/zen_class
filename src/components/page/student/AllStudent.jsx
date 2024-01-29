@@ -74,7 +74,7 @@ const AllStudent = () => {
                 <td>{e.email}</td>
                 <td>{e.batch}</td>
                 <td>
-                  <Button onClick={() => navigate(``)} variant="info">
+                  <Button onClick={() => navigate(`/student-edit/${e._id}`)} variant="info">
                   <LiaUserEditSolid />
                   </Button>{" "}
                   &nbsp;
